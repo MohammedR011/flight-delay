@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Am I on Time?</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+    
+    <style>
+        /* تنسيقات النتيجة */
+        .result-card {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: bold;
+            animation: fadeIn 0.5s ease;
+            background: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        
+        .result-on-time {
+            border: 3px solid #10b981;
+            background: linear-gradient(135deg, #d1fae5 0%, #ecfdf5 100%);
+        }
+        
+        .result-delayed {
+            border: 3px solid #ef4444;
+            background: linear-gradient(135deg, #fee2e2 0%, #fef2f2 100%);
+        }
+        
+        .result-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+        
+        .result-status {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .result-on-time .result-status {
+            color: #065f46;
+        }
+        
+        .result-delayed .result-status {
+            color: #991b1b;
+        }
+        
+        .delay-value {
+            font-size: 42px;
+            font-weight: 800;
+            margin: 10px 0;
+        }
+        
+        .result-on-time .delay-value {
+            color: #059669;
+        }
+        
+        .result-delayed .delay-value {
+            color: #dc2626;
+        }
+        
+        .minutes-label {
+            font-size: 18px;
+            color: #6b7280;
+            font-weight: 600;
+        }
+        
+        .result-message {
+            font-size: 16px;
+            color: #4b5563;
+            margin-top: 10px;
+            font-weight: 500;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* تنسيقات النموذج */
+        .delay-card {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 16px;
+            width: 420px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            text-align: left;
+        }
+        
+        .delay-title {
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 22px;
+            color: #333;
+            font-weight: 700;
+        }
+        
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 5px;
+            display: block;
+        }
+        
+        input, select {
+            padding: 12px;
+            border-radius: 10px;
+            border: 2px solid #e5e7eb;
+            background-color: #f9fafb;
+            font-size: 14px;
+            width: 100%;
+            box-sizing: border-box;
+            color: #111827;
+            transition: all 0.3s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #6366f1;
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        
+        .purple-btn {
+            margin-top: 10px;
+            padding: 14px;
+            border-radius: 10px;
+            border: none;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .purple-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+        }
+        
+        .purple-btn:active {
+            transform: translateY(0);
+        }
+        
+        .purple-btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        /* تنسيقات الصفحة الرئيسية */
+        .main-title {
+            text-align: center;
+            font-size: 48px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 15px;
+            text-shadow: 0px 2px 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        .subtitle-box {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 18px 28px;
+            border-radius: 16px;
+            max-width: 600px;
+            margin: 0 auto 40px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #f1f5f9;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        
+        body.bg {
+            min-height: 100vh;
+        }
+        
+        .overlay {
+            background: rgba(0, 0, 0, 0.5);
+        }
+        
+        .page-wrapper {
+            padding-top: 40px;
+        }
+    </style>
+</head>
+
+<body class="bg">
+    <div class="overlay"></div>
+    
+    <div class="page-wrapper">
+        <div>
+            <!-- Title -->
+            <div class="main-title">Am I on Time?</div>
+            <div class="subtitle-box">
+                <div class="subtitle">
+                    With a click you can predict whether your flight will arrive on time or late.<br>
+                    Simple inputs, instant insights, smarter travel decisions.
+                </div>
+            </div>
+
+            <!-- Card -->
+            <div class="delay-card">
+                <h2 class="delay-title">✈️ Flight Delay Prediction</h2>
+
+                <form id="predictionForm" onsubmit="return submitForm(event)">
+                    <!-- Airline -->
+                    <!-- Airline -->
+<label for="airline">Airline</label>
+<select id="airline" name="Airline" required>
+    <option value="">Select airline</option>
+    <option value="Endeavor Air Inc.">Endeavor Air Inc.</option>
+    <option value="Mesa Airlines Inc.">Mesa Airlines Inc.</option>
+    <option value="Delta Air Lines Inc.">Delta Air Lines Inc.</option>
+    <option value="Alaska Airlines Inc.">Alaska Airlines Inc.</option>
+    <option value="SkyWest Airlines Inc.">SkyWest Airlines Inc.</option>
+    <option value="Southwest Airlines Co.">Southwest Airlines Co.</option>
+    <option value="ExpressJet Airlines Inc.">ExpressJet Airlines Inc.</option>
+    <option value="American Airlines Inc.">American Airlines Inc.</option>
+    <option value="United Air Lines Inc.">United Air Lines Inc.</option>
+    <option value="JetBlue Airways">JetBlue Airways</option>
+    <option value="Comair Inc.">Comair Inc.</option>
+    <option value="Cape Air">Cape Air</option>
+    <option value="Envoy Air">Envoy Air</option>
+    <option value="Republic Airlines">Republic Airlines</option>
+    <option value="Frontier Airlines Inc.">Frontier Airlines Inc.</option>
+    <option value="Spirit Air Lines">Spirit Air Lines</option>
+    <option value="Empire Airlines Inc.">Empire Airlines Inc.</option>
+    <option value="GoJet Airlines, LLC d/b/a United Express">GoJet Airlines, LLC d/b/a United Express</option>
+    <option value="Allegiant Air">Allegiant Air</option>
+    <option value="Horizon Air">Horizon Air</option>
+    <option value="Virgin America">Virgin America</option>
+    <option value="Air Wisconsin Airlines Corp">Air Wisconsin Airlines Corp</option>
+    <option value="Trans States Airlines">Trans States Airlines</option>
+    <option value="Hawaiian Airlines Inc.">Hawaiian Airlines Inc.</option>
+    <option value="Compass Airlines">Compass Airlines</option>
+    <option value="Commutair Aka Champlain Enterprises, Inc.">Commutair Aka Champlain Enterprises, Inc.</option>
+    <option value="Peninsula Airways Inc.">Peninsula Airways Inc.</option>
+</select>
+
+                    <!-- Departure Date -->
+                    <label for="deptime">Departure Date</label>
+                    <input id="deptime" type="date" name="DepTime" required>
+
+                    <!-- Destination State -->
+                    <label for="dest">Destination State</label>
+                    <select id="dest" name="DestStateName" required>
+                        <option value="">Select state</option>
+                        <option value="California">California</option>
+                        <option value="Texas">Texas</option>
+                        <option value="New York">New York</option>
+                        <option value="Florida">Florida</option>
+                        <option value="Illinois">Illinois</option>
+                        <option value="Ohio">Ohio</option>
+                        <option value="Georgia">Georgia</option>
+                        <option value="North Carolina">North Carolina</option>
+                        <option value="Michigan">Michigan</option>
+                        <option value="Pennsylvania">Pennsylvania</option>
+                        <option value="Arizona">Arizona</option>
+                        <option value="Colorado">Colorado</option>
+                        <option value="Nevada">Nevada</option>
+                        <option value="Washington">Washington</option>
+                        <option value="Massachusetts">Massachusetts</option>
+                        <option value="Virginia">Virginia</option>
+                        <option value="New Jersey">New Jersey</option>
+                        <option value="Minnesota">Minnesota</option>
+                        <option value="Oregon">Oregon</option>
+                        <option value="Indiana">Indiana</option>
+                        <option value="Tennessee">Tennessee</option>
+                        <option value="Missouri">Missouri</option>
+                        <option value="Maryland">Maryland</option>
+                        <option value="Wisconsin">Wisconsin</option>
+                        <option value="Utah">Utah</option>
+                        <option value="Connecticut">Connecticut</option>
+                        <option value="South Carolina">South Carolina</option>
+                        <option value="Alabama">Alabama</option>
+                        <option value="Louisiana">Louisiana</option>
+                        <option value="Kentucky">Kentucky</option>
+                        <option value="Oklahoma">Oklahoma</option>
+                        <option value="Arkansas">Arkansas</option>
+                        <option value="Nebraska">Nebraska</option>
+                        <option value="New Mexico">New Mexico</option>
+                        <option value="Iowa">Iowa</option>
+                        <option value="North Dakota">North Dakota</option>
+                        <option value="South Dakota">South Dakota</option>
+                        <option value="Puerto Rico">Puerto Rico</option>
+                        <option value="Wyoming">Wyoming</option>
+                        <option value="West Virginia">West Virginia</option>
+                        <option value="Vermont">Vermont</option>
+                        <option value="U.S. Virgin Islands">U.S. Virgin Islands</option>
+                    </select>
+
+                    <button type="submit" class="purple-btn" id="predictBtn">Predict Delay</button>
+                </form>
+
+                <div id="result"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function submitForm(event) {
+            event.preventDefault();
+            
+            const predictBtn = document.getElementById('predictBtn');
+            const originalText = predictBtn.textContent;
+            predictBtn.textContent = 'Predicting...';
+            predictBtn.disabled = true;
+            
+            const formData = new FormData(event.target);
+            const resultDiv = document.getElementById('result');
+            
+            try {
+                const response = await fetch("/predict_delay", {
+                    method: "POST",
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                // إعادة زر التقديم إلى حالته الأصلية
+                predictBtn.textContent = originalText;
+                predictBtn.disabled = false;
+                
+                if (data.status === "error") {
+                    resultDiv.innerHTML = `
+                        <div class="result-card" style="border-color: #ef4444; background: #fef2f2;">
+                            <div class="result-icon">❌</div>
+                            <div class="result-status" style="color: #991b1b;">Error</div>
+                            <div class="result-message">${data.error || 'Prediction failed. Please try again.'}</div>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                const isDelayed = data.is_delayed_over_15;
+                const delay = data.delay;
+                
+                if (isDelayed) {
+                    resultDiv.innerHTML = `
+                        <div class="result-card result-delayed">
+                            <div class="result-icon">⚠️</div>
+                            <div class="result-status">FLIGHT DELAYED</div>
+                            <div class="delay-value">${delay.toFixed(1)}</div>
+                            <div class="minutes-label">minutes</div>
+                            <div class="result-message">Expected delay exceeds 15 minutes</div>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="result-card result-on-time">
+                            <div class="result-icon">✅</div>
+                            <div class="result-status">FLIGHT ON TIME</div>
+                            <div class="delay-value">${delay.toFixed(1)}</div>
+                            <div class="minutes-label">minutes</div>
+                            <div class="result-message">Expected delay is within acceptable limits</div>
+                        </div>
+                    `;
+                }
+                
+            } catch (error) {
+                // إعادة زر التقديم إلى حالته الأصلية في حالة الخطأ
+                predictBtn.textContent = originalText;
+                predictBtn.disabled = false;
+                
+                resultDiv.innerHTML = `
+                    <div class="result-card" style="border-color: #ef4444; background: #fef2f2;">
+                        <div class="result-icon">❌</div>
+                        <div class="result-status" style="color: #991b1b;">Network Error</div>
+                        <div class="result-message">Please check your connection and try again</div>
+                    </div>
+                `;
+                console.error('Error:', error);
+            }
+        }
+        
+        // تعيين تاريخ اليوم كقيمة افتراضية
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date();
+            const formattedDate = today.toISOString().split('T')[0];
+            document.getElementById('deptime').value = formattedDate;
+            
+            // تعيين تاريخ الحد الأدنى والأقصى
+            const dateInput = document.getElementById('deptime');
+            dateInput.min = '2018-01-01';
+            dateInput.max = '2019-12-31';
+        });
+    </script>
+</body>
+</html>
